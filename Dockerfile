@@ -12,7 +12,9 @@ RUN apt-get update; \
     apt-get install -y git; \
     apt-get install -y dpkg-dev; \
     apt-get install -y libpng-dev; \
-    cd /app && apt-get source nginx; \ 
+    apt-get autoclean && apt-get autoremove;
+
+RUN cd /app && apt-get source nginx; \ 
     cd /app/ && git clone https://github.com/chobits/ngx_http_proxy_connect_module; \
     cd /app/nginx-* && patch -p1 < ../ngx_http_proxy_connect_module/proxy_connect.patch; \
     cd /app/nginx-* && ./configure --add-module=/app/ngx_http_proxy_connect_module && make && make install;
