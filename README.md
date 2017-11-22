@@ -96,3 +96,13 @@ docker run -d -p 8888:8888 -v nginx_whitelist.conf:/usr/local/nginx/conf/nginx.c
 
 Now the Docker container is running with the mounted configuration.
 
+## Testing
+
+You can test your configuration by pointing your Browser to the Nginx proxy in the running Docker container. 
+If you run the Docker container on your localhost, then you can point your Browser to `localhost:8888`. 
+Here is an example how it looks like in Firefox: 
+
+![Firefox Proxy Settings](images/Firefox-Proxy-Settings.png)
+
+
+
