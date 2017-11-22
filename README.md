@@ -101,5 +101,54 @@ Here is an example how it looks like in Firefox:
 
 ![Firefox Proxy Settings](images/Firefox-Proxy-Settings.png)
 
+## Configuring Docker and Kubernetes with a Proxy
 
+Assuming you have a cluster of Docker machines (Kubernetes cluster)
+and you would like to route all outgoing traffic to your proxy. 
+That can be achieved by setting some global ENV variables on each Docker machine. 
 
+For RedHat/CentOS version 6:
+
+```
+cat <<EOF | sudo tee -a /etc/sysconfig/docker
+export http_proxy="http://myproxy.example.com:8888"
+export https_proxy="https://myproxy.example.com:8888"
+export no_proxy=<REGISTRY_IP>
+EOF
+ 
+sudo service docker restart
+```
+
+For RedHat/CentOS version 7, remove export:
+
+```
+cat <<EOF | sudo tee -a /etc/sysconfig/docker
+http_proxy="http://myproxy.example.com:8888"
+https_proxy="https://myproxy.example.com:8888"
+no_proxy=<REGISTRY_IP>
+EOF
+ 
+sudo sed -i '/\[Service\]/a EnvironmentFile=/etc/sysconfig/docker' /usr/lib/systemd/system/docker.service
+sudo systemctl daemon-reload
+sudo service docker restart
+```
+
+For Ubuntu 14.04:
+
+```
+cat <<EOF | sudo tee -a /etc/default/docker
+export http_proxy="http://myproxy.example.com:8888"
+export https_proxy="https://myproxy.example.com:8888"
+export no_proxy=<REGISTRY_IP>
+EOF
+ 
+sudo restart docker
+```
+
+Alternatively the Proxy can be set by Container start as well: 
+
+```
+docker run -e "http_proxy=http://myproxy.example.com:8888" \
+           -e "https_proxy=https://myproxy.example.com:8888" \
+           -d liveperson\app run.sh
+```
