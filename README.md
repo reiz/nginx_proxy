@@ -49,13 +49,22 @@ In the first server section domains can be whitelisted by simply adding a
 `server_name *` line for each whitelisted domain. Here an example: 
 
 ```
+    # Whitelist Google and Heise
     server {
         listen       8888;
         server_name  google.com;
         server_name  www.google.com;
         server_name  google.de;
         server_name  www.google.de;
-        return 404;
+        server_name  heise.de;
+        server_name  www.heise.de;
+        proxy_connect;
+        proxy_max_temp_file_size 0;
+        resolver 8.8.8.8;
+        location / {
+           proxy_pass http://$http_host;
+           proxy_set_header Host $http_host;
+        }
     }
 ```
 
