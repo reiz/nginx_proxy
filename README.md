@@ -20,7 +20,7 @@ Nginx is can be configured for forward proxying.
 Unfortunately that doesn't work very well with HTTPS connections. 
 As soon the user is calling a URL via https, Nginx will throw errors. 
 There is a [StackOverflow issue](https://superuser.com/questions/604352/nginx-as-forward-proxy-for-https)
-for that problem. Luckily there is a solution for that problem. 
+to that topic. Luckily there is a solution for that problem. 
 The [ngx_http_proxy_connect_module](https://github.com/chobits/ngx_http_proxy_connect_module)
 is solving this problem. If Nginx is compiled with that module, 
 the proxying will work with SSL connections as well. 
