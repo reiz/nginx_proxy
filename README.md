@@ -1,4 +1,4 @@
-# nginx forward proxy
+# Nginx forward proxy
 
 Usually Nginx is used as proxy or load balancer for incoming traffic. 
 In this repository it is used as forward proxy. 
