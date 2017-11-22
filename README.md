@@ -27,8 +27,9 @@ the proxying will work with SSL connections as well.
 
 ## Docker
 
-The Dockerfile in this repository is assembling an Nginx with the ngx_http_proxy_connect_module
-and an nginx.conf file which is whitelisting some domains, but bocks all outgoing traffic by default. 
+The Dockerfile in this repository is assembling an Nginx with the [ngx_http_proxy_connect_module](https://github.com/chobits/ngx_http_proxy_connect_module)
+and an nginx.conf file which blocks all outgoing traffic by default, 
+but allows access to some whitelisted domains like google.com.
 The Docker image can be build like this: 
 
 ```
