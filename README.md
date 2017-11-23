@@ -130,7 +130,7 @@ That can be achieved by setting some global ENV variables on each Docker machine
 
 For RedHat/CentOS version 6:
 
-```
+```shell
 cat <<EOF | sudo tee -a /etc/sysconfig/docker
 export http_proxy="http://myproxy.example.com:8888"
 export https_proxy="https://myproxy.example.com:8888"
@@ -142,7 +142,7 @@ sudo service docker restart
 
 For RedHat/CentOS version 7, remove export:
 
-```
+```shell
 cat <<EOF | sudo tee -a /etc/sysconfig/docker
 http_proxy="http://myproxy.example.com:8888"
 https_proxy="https://myproxy.example.com:8888"
@@ -156,7 +156,7 @@ sudo service docker restart
 
 For Ubuntu 14.04:
 
-```
+```shell
 cat <<EOF | sudo tee -a /etc/default/docker
 export http_proxy="http://myproxy.example.com:8888"
 export https_proxy="https://myproxy.example.com:8888"
@@ -168,7 +168,7 @@ sudo restart docker
 
 Alternatively the Proxy can be set by Container start as well: 
 
-```
+```shell
 docker run -e "http_proxy=http://myproxy.example.com:8888" \
            -e "https_proxy=https://myproxy.example.com:8888" \
            -d liveperson\app run.sh
