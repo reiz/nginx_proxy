@@ -49,7 +49,7 @@ In the first server section domains can be whitelisted by simply adding a
 `server_name *` line for each whitelisted domain. Here an example: 
 
 ```
-    # Whitelist Google and Heise
+    # Whitelist Google
     server {
         listen       8888;
         server_name  google.com;
