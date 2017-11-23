@@ -166,6 +166,15 @@ EOF
 sudo restart docker
 ```
 
+For Kubernetes it works the same way. 
+The `http_proxy` ENV has to be set before the K8S processes are starting.
+Minikube can be started with proxy params directly.
+Here an example: 
+
+```shell
+https_proxy=http://<PROXY_SERVER>:80 minikube start --docker-env HTTP_PROXY=http://<PROXY_SERVER>:80 --docker-env HTTPS_PROXY=http://<PROXY_SERVER>:80 --docker-env NO_PROXY=192.168.99.0/24
+```
+
 Alternatively the Proxy can be set by Container start as well: 
 
 ```shell
