@@ -1,32 +1,32 @@
 # Nginx forward proxy
 
-Usually, Nginx is used as proxy or load balancer for incoming traffic. 
-In this repository, it is used as forward proxy. 
+[Nginx](https://nginx.org/en/) is a very fast HTTP and reverse proxy server. 
+Usually, Nginx is used to serve and cache static assets or as proxy or load balancer for incoming traffic to application servers. In this repository, it is used as forward proxy. 
 
 ## Use Case
 
-Assume you have a network where you want to control outgoing HTTP calls. 
+Assume you have a network where you want to control outgoing traffic. 
 You either want to: 
 
- - Only allow HTTP calls to whitelisted URLs
- - Only block HTTP calls to blacklisted URLs
+ - Deny all outgoing calls by default and only allow HTTP(S) calls to whitelisted URLs.
+ - Allow all outgoing calls by default and only block HTTP(S) calls to blacklisted URLs.
 
-The Docker daemon can be configured that way that it routes all traffic through an proxy. This proxy can be an Nginx which is configured for forwarding proxying. 
+The Docker daemon can be configured that way that it routes all traffic through an proxy. This proxy can be an Nginx which is configured as forwarding proxying.
 
-## ngx_http_proxy_connect_module
+## ngx\_http\_proxy\_connect\_module
 
 Nginx is can be configured for forwarding proxying. 
 Unfortunately, that doesn't work very well with HTTPS connections. 
 As soon the user is calling a URL via https, Nginx will throw errors. 
 There is a [StackOverflow issue](https://superuser.com/questions/604352/nginx-as-forward-proxy-for-https)
 to that topic. Luckily there is a solution for that problem. 
-The [ngx_http_proxy_connect_module](https://github.com/chobits/ngx_http_proxy_connect_module)
-is solving this problem. If Nginx is compiled with that module, 
+The [ngx\_http\_proxy\_connect\_module](https://github.com/chobits/ngx_http_proxy_connect_module)
+is solving this issue. If Nginx is compiled with that module, 
 the proxying will work with SSL connections as well. 
 
-## Docker
+## Docker Build
 
-The Dockerfile in this repository is assembling an Nginx with the [ngx_http_proxy_connect_module](https://github.com/chobits/ngx_http_proxy_connect_module)
+The Dockerfile in this repository is assembling an Nginx with the [ngx\_http\_proxy\_connect\_module](https://github.com/chobits/ngx_http_proxy_connect_module)
 and an nginx.conf file which blocks all outgoing traffic by default, 
 but allows access to some whitelisted domains like google.com.
 The Docker image can be built like this: 
@@ -38,7 +38,7 @@ docker build -t reiz/nginx_proxy:0.0.1 .
 Or simply download it from [Docker Hub](https://hub.docker.com/r/reiz/nginx_proxy/) with: 
 
 ```
-docker pull reiz/nginx_proxy:0.0.1
+docker pull reiz/nginx_proxy:latest
 ```
 
 ## Whitelist certain domains
@@ -53,11 +53,9 @@ In the first server section domains can be whitelisted by simply adding a
     server {
         listen       8888;
         server_name  google.com;
-        server_name  www.google.com;
+        server_name  *.google.com;
         server_name  google.de;
         server_name  www.google.de;
-        server_name  heise.de;
-        server_name  www.heise.de;
         proxy_connect;
         proxy_max_temp_file_size 0;
         resolver 8.8.8.8;
@@ -68,11 +66,25 @@ In the first server section domains can be whitelisted by simply adding a
     }
 ```
 
-In the above example, google.com would be whitelisted. You could reach Google, but no other site. 
+Regex can be used to describe a domain. This `*.google.com` for example is whitelisting all subdomains of google.com. In the above example, google.com and all subdomains of it are whitelisted. Beside that google.de and www.google.de are whitelisted. Subdomains of google.de are **not** whitelisted. 
+The proxy would allow outgoing calls to this domains: 
+
+ - google.com
+ - www.google.com
+ - mail.google.com
+ - api.google.com
+ - google.de
+ - www.google.de
+ 
+This domains are blocked with the above configuration: 
+ 
+ - mail.google.de
+ - api.google.de
+
 By starting the Docker container the file can be mounted into the running container. 
 
 ```
-docker run -d -p 8888:8888 -v nginx_whitelist.conf:/usr/local/nginx/conf/nginx.conf reiz/nginx_proxy:0.0.1 
+docker run -d -p 8888:8888 -v nginx_whitelist.conf:/usr/local/nginx/conf/nginx.conf reiz/nginx_proxy:latest 
 ```
 
 Now the Docker container is running with the mounted configuration.
@@ -88,12 +100,12 @@ In the first server section domains can be blacklisted by simply adding a
     server {
         listen       8888;
         server_name  google.com;
-        server_name  www.google.com;
+        server_name  *.google.com;
         return 404;
     }
 ```
 
-In the example above all pages would be accessible, but Google would be blocked.
+In the example above all pages would be accessible, but google.com and all subdomains of it would be blocked. Regex can be used here in the same way as in the whitelist example. 
 By starting the Docker container the file can be mounted into the running container. 
 
 ```
@@ -161,3 +173,4 @@ docker run -e "http_proxy=http://myproxy.example.com:8888" \
            -e "https_proxy=https://myproxy.example.com:8888" \
            -d liveperson\app run.sh
 ```
+
