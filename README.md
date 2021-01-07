@@ -15,7 +15,7 @@ The Docker daemon can be configured that way that it routes all traffic through 
 
 ## ngx\_http\_proxy\_connect\_module
 
-Nginx is can be configured for forwarding proxying. 
+Nginx can be configured for forwarding proxying. 
 Unfortunately, that doesn't work very well with HTTPS connections. 
 As soon the user is calling a URL via https, Nginx will throw errors. 
 There is a [StackOverflow issue](https://superuser.com/questions/604352/nginx-as-forward-proxy-for-https)
@@ -182,4 +182,14 @@ docker run -e "http_proxy=http://myproxy.example.com:8888" \
            -e "https_proxy=https://myproxy.example.com:8888" \
            -d liveperson\app run.sh
 ```
+
+## Version Matrix
+
+This tables show which Docker tag contains which Ubuntu & Nginx version: 
+
+| Docker tag              | Ubuntu version | Nginx version |
+|-------------------------|----------------|---------------|
+| reiz/nginx_proxy:0.0.1  | 16.04          | 1.10.3        |
+| reiz/nginx_proxy:0.0.2  | 18.04          | 1.14.0        |
+| reiz/nginx_proxy:0.0.3  | 20.04          | 1.18.0        |
 

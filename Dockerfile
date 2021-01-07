@@ -1,4 +1,4 @@
-FROM        ubuntu:16.04
+FROM        ubuntu:20.04
 MAINTAINER  Robert Reiz <reiz@versioneye.com>
 
 WORKDIR /app
@@ -16,7 +16,7 @@ RUN apt-get update; \
 
 RUN cd /app && apt-get source nginx; \ 
     cd /app/ && git clone https://github.com/chobits/ngx_http_proxy_connect_module; \
-    cd /app/nginx-* && patch -p1 < ../ngx_http_proxy_connect_module/patch/proxy_connect.patch; \
+    cd /app/nginx-* && patch -p1 < ../ngx_http_proxy_connect_module/patch/proxy_connect_rewrite_1018.patch; \
     cd /app/nginx-* && ./configure --add-module=/app/ngx_http_proxy_connect_module && make && make install;
 
 ADD nginx_whitelist.conf /usr/local/nginx/conf/nginx.conf
