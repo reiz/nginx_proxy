@@ -84,7 +84,7 @@ This domains are blocked with the above configuration:
 By starting the Docker container the file can be mounted into the running container. 
 
 ```
-docker run -d -p 8888:8888 -v nginx_whitelist.conf:/usr/local/nginx/conf/nginx.conf reiz/nginx_proxy:0.0.3 
+docker run -d -p 8888:8888 -v ${PWD}/nginx_whitelist.conf:/usr/local/nginx/conf/nginx.conf reiz/nginx_proxy:0.0.3 
 ```
 
 Now the Docker container is running with the mounted configuration.
@@ -109,7 +109,7 @@ In the example above all pages would be accessible, but google.com and all subdo
 By starting the Docker container the file can be mounted into the running container. 
 
 ```
-docker run -d -p 8888:8888 -v nginx_whitelist.conf:/usr/local/nginx/conf/nginx.conf reiz/nginx_proxy:0.0.1 
+docker run -d -p 8888:8888 -v ${PWD}/nginx_whitelist.conf:/usr/local/nginx/conf/nginx.conf reiz/nginx_proxy:0.0.1 
 ```
 
 Now the Docker container is running with the mounted configuration.
