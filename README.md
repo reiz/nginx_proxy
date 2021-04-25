@@ -193,3 +193,7 @@ This tables show which Docker tag contains which Ubuntu & Nginx version:
 | reiz/nginx_proxy:0.0.2  | 18.04          | 1.14.0        |
 | reiz/nginx_proxy:0.0.3  | 20.04          | 1.18.0        |
 
+
+## License 
+
+This repository is open source under the MIT license. The full license text is available in the LICENSE.md file.
