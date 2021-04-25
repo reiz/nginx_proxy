@@ -187,11 +187,12 @@ docker run -e "http_proxy=http://myproxy.example.com:8888" \
 
 This tables show which Docker tag contains which Ubuntu & Nginx version: 
 
-| Docker tag              | Ubuntu version | Nginx version |
-|-------------------------|----------------|---------------|
-| reiz/nginx_proxy:0.0.1  | 16.04          | 1.10.3        |
-| reiz/nginx_proxy:0.0.2  | 18.04          | 1.14.0        |
-| reiz/nginx_proxy:0.0.3  | 20.04          | 1.18.0        |
+| Docker tag              | Ubuntu version | Nginx version | Published at | Comment         | 
+|-------------------------|----------------|---------------|--------------|-----------------|
+| reiz/nginx_proxy:0.0.1  | 16.04          | 1.10.3        |              |                 |
+| reiz/nginx_proxy:0.0.2  | 18.04          | 1.14.0        |              |                 |
+| reiz/nginx_proxy:0.0.3  | 20.04          | 1.18.0        |              |                 |
+| reiz/nginx_proxy:0.0.4  | 20.04          | 1.18.0        | 2021-04-25   | With libssl-dev |
 
 
 ## License 
