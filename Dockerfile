@@ -1,27 +1,40 @@
-FROM        ubuntu:20.04
-MAINTAINER  Robert Reiz <reiz@versioneye.com>
+FROM ubuntu:20.04 as builder
+
+COPY sources.list /etc/apt/sources.list
+ADD https://github.com/krallin/tini/releases/download/v0.19.0/tini /tini
 
 WORKDIR /app
 
-ADD sources.list /etc/apt/sources.list
+RUN apt-get update && \
+    apt-get install -y libfontconfig1 libpcre3 libpcre3-dev git dpkg-dev libpng-dev libssl-dev && \
+    apt-get source nginx && \
+    git clone https://github.com/chobits/ngx_http_proxy_connect_module && \
+    cd /app/nginx-* && \
+    patch -p1 < ../ngx_http_proxy_connect_module/patch/proxy_connect_rewrite_1018.patch && \
+    cd /app/nginx-* && \
+    ./configure --add-module=/app/ngx_http_proxy_connect_module --with-http_ssl_module --with-http_stub_status_module --with-http_realip_module --with-threads && \
+    make && \
+    make install && \
+    chmod +x /tini
 
-RUN apt-get update; \
-    apt-get install -y libfontconfig1; \
-    apt-get install -y libpcre3; \ 
-    apt-get install -y libpcre3-dev; \
-    apt-get install -y git; \
-    apt-get install -y dpkg-dev; \
-    apt-get install -y libpng-dev; \
-    apt-get install -y libssl-dev; \
-    apt-get autoclean && apt-get autoremove;
+FROM ubuntu:20.04
 
-RUN cd /app && apt-get source nginx; \ 
-    cd /app/ && git clone https://github.com/chobits/ngx_http_proxy_connect_module; \
-    cd /app/nginx-* && patch -p1 < ../ngx_http_proxy_connect_module/patch/proxy_connect_rewrite_1018.patch; \
-    cd /app/nginx-* && ./configure --add-module=/app/ngx_http_proxy_connect_module --with-http_ssl_module --with-http_stub_status_module --with-http_realip_module --with-threads && make && make install;
+LABEL maintainer='Robert Reiz <reiz@versioneye.com>'
 
-ADD nginx_whitelist.conf /usr/local/nginx/conf/nginx.conf
+COPY --from=builder /usr/local/nginx/sbin/nginx /usr/local/nginx/sbin/nginx
+COPY --from=builder /tini /tini
+COPY nginx_whitelist.conf /usr/local/nginx/conf/nginx.conf
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libssl-dev && \
+    mkdir -p /usr/local/nginx/logs/ && \
+    touch /usr/local/nginx/logs/error.log && \
+    apt-get clean autoclean && \
+    apt-get autoremove --yes && \
+    rm -rf /var/lib/{apt,dpkg,cache,log}/
 
 EXPOSE 8888
+
+ENTRYPOINT ["/tini", "--"]
 
 CMD ["/usr/local/nginx/sbin/nginx"]
