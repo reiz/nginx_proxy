@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,6 +33,6 @@ jobs:
       - name: Stop containers and show logs
         if: always()
         run: |
-          docker exec -it nginx_proxy cat /var/log/nginx_errors.log
-          docker exec -it nginx_proxy cat /var/log/nginx_access.log
+          docker exec -i nginx_proxy cat /var/log/nginx_errors.log
+          docker exec -i nginx_proxy cat /var/log/nginx_access.log
           docker-compose -f docker-compose.yaml down
