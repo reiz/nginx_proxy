@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+  nginx_proxy:
+    image: nginx_proxy:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nginx_proxy
+    volumes:
+      - ./nginx_blacklist.conf:/usr/local/nginx/conf/nginx.conf
+    environment:
+      - TZ=Asia/Kolkata
+    restart: always
