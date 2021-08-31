@@ -29,9 +29,10 @@ jobs:
             count=$(( count + 1 ))
             [[ $count -ge 5 ]] && exit 1
           done
+
+      - name: Stop containers and show logs
+        if: always()
+        run: |
           docker exec -it nginx_proxy cat /var/log/nginx_errors.log
           docker exec -it nginx_proxy cat /var/log/nginx_access.log
-
-      - name: Stop containers
-        if: always()
-        run: docker-compose -f docker-compose.yaml down
+          docker-compose -f docker-compose.yaml down
