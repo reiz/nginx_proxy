@@ -25,9 +25,9 @@ LABEL maintainer='Robert Reiz <reiz@versioneye.com>'
 COPY nginx_whitelist.conf /usr/local/nginx/conf/nginx.conf
 COPY --from=builder /usr/local/nginx/sbin/nginx /usr/local/nginx/sbin/nginx
 COPY --from=builder /tini /tini
+COPY --from=builder /var/lib/apt/lists/ /var/lib/apt/lists/ ## to save apt-update
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends libssl-dev && \
+RUN apt-get install -y --no-install-recommends libssl-dev && \
     mkdir -p /usr/local/nginx/logs/ && \
     touch /usr/local/nginx/logs/error.log && \
     apt-get clean autoclean && \
