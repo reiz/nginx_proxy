@@ -21,10 +21,6 @@ FROM ubuntu:20.04
 
 LABEL maintainer='Robert Reiz <reiz@versioneye.com>'
 
-COPY --from=builder /usr/local/nginx/sbin/nginx /usr/local/nginx/sbin/nginx
-COPY --from=builder /tini /tini
-COPY nginx_whitelist.conf /usr/local/nginx/conf/nginx.conf
-
 RUN apt-get update && \
     apt-get install -y --no-install-recommends libssl-dev && \
     mkdir -p /usr/local/nginx/logs/ && \
@@ -32,6 +28,10 @@ RUN apt-get update && \
     apt-get clean autoclean && \
     apt-get autoremove --yes && \
     rm -rf /var/lib/{apt,dpkg,cache,log}/
+
+COPY nginx_whitelist.conf /usr/local/nginx/conf/nginx.conf
+COPY --from=builder /usr/local/nginx/sbin/nginx /usr/local/nginx/sbin/nginx
+COPY --from=builder /tini /tini
 
 EXPOSE 8888
 
