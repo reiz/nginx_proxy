@@ -1,0 +1,10 @@
+ARG IMAGE=ubuntu:20.04
+FROM $IMAGE as builder
+
+RUN apt-get update
+FROM $IMAGE
+
+COPY --from=builder /var/lib/apt/lists/ /var/lib/apt/lists/
+
+RUN apt-get install -y --print-uris --no-install-recommends libssl1.1 
+COPY ./nginx /nginx
