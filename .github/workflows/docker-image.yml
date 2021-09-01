@@ -18,6 +18,7 @@ jobs:
 
       - name: Build the Docker image
         run: |
+          (docker images -a | grep -vE ubuntu.\*20.04 | awk '{print $3}' | xargs docker rmi -f) || true
           docker-compose -f docker-compose.yaml up -d --build
           docker images -a
 
