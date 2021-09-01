@@ -18,9 +18,11 @@ jobs:
 
       - name: Build the Docker image
         run: |
-          (docker images -a | grep -vE ubuntu.\*20.04 | awk '{print $3}' | xargs docker rmi -f) || true
+          ((docker images -a | grep -vE ubuntu.\*20.04 | awk '{print $3}' | xargs docker rmi -f) || true) &
+          wait_rm=$!
           docker-compose -f docker-compose.yaml up -d --build
           docker images -a
+          wait $wait_rm
 
       - name: Test with curl
         run: |
