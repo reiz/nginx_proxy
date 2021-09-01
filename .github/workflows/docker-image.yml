@@ -17,10 +17,19 @@ jobs:
         with:
           install: true
 
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-single-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-single-buildx
+
       - name: Build the Docker image
         run: |
-          docker-compose -f docker-compose.yaml up -d --build
+          docker build -t nginx_proxy:latest -t nginx_proxy:$(date +%s) .
           docker images -a
+          docker-compose -f docker-compose.yaml up -d
 
       - name: Test with curl
         run: |
@@ -38,6 +47,12 @@ jobs:
       - name: Stop containers and show logs
         if: always()
         run: |
-          docker exec -i nginx_proxy cat /var/log/nginx_errors.log
-          docker exec -i nginx_proxy cat /var/log/nginx_access.log
-          docker-compose -f docker-compose.yaml down
+          docker exec -i nginx_proxy cat /var/log/nginx_errors.log || true
+          docker exec -i nginx_proxy cat /var/log/nginx_access.log || true
+          docker-compose -f docker-compose.yaml down || true
+
+      - name: Move cache
+        if: always()
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
