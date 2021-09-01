@@ -1,4 +1,5 @@
-FROM ubuntu:20.04 as builder
+ARG IMAGE=ubuntu:20.04
+FROM $IMAGE as builder
 
 COPY sources.list /etc/apt/sources.list
 ADD https://github.com/krallin/tini/releases/download/v0.19.0/tini /tini
@@ -17,9 +18,13 @@ RUN apt-get update && \
     make install && \
     chmod +x /tini
 
-FROM ubuntu:20.04
+FROM $IMAGE
 
 LABEL maintainer='Robert Reiz <reiz@versioneye.com>'
+
+COPY nginx_whitelist.conf /usr/local/nginx/conf/nginx.conf
+COPY --from=builder /usr/local/nginx/sbin/nginx /usr/local/nginx/sbin/nginx
+COPY --from=builder /tini /tini
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends libssl-dev && \
@@ -28,10 +33,6 @@ RUN apt-get update && \
     apt-get clean autoclean && \
     apt-get autoremove --yes && \
     rm -rf /var/lib/{apt,dpkg,cache,log}/
-
-COPY nginx_whitelist.conf /usr/local/nginx/conf/nginx.conf
-COPY --from=builder /usr/local/nginx/sbin/nginx /usr/local/nginx/sbin/nginx
-COPY --from=builder /tini /tini
 
 EXPOSE 8888
 
