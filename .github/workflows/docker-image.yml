@@ -23,6 +23,7 @@ jobs:
 
       - name: Test with curl
         run: |
+          set +e
           nginx_proxy_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nginx_proxy)
           err=1
           count=0
