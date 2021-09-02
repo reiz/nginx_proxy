@@ -13,7 +13,8 @@ RUN apt-get update && \
     cd /app/nginx-* && \
     patch -p1 < ../ngx_http_proxy_connect_module/patch/proxy_connect_rewrite_1018.patch && \
     cd /app/nginx-* && \
-    ./configure --add-module=/app/ngx_http_proxy_connect_module --with-http_ssl_module --with-http_stub_status_module --with-http_realip_module --with-threads && \
+    ./configure --add-module=/app/ngx_http_proxy_connect_module --with-http_ssl_module \
+        --with-http_stub_status_module --with-http_realip_module --with-threads && \
     make && \
     make install && \
     chmod +x /tini
