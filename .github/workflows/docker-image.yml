@@ -43,11 +43,18 @@ jobs:
           set +e
           docker images -a
           docker run -d --name nginx_proxy nginx_proxy:latest
+          sleep 5
           nginx_proxy_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nginx_proxy)
           err=1
           count=0
           while [[ $err != 0 ]]; do
-            curl https://www.google.com -svo /dev/null -x $nginx_proxy_ip:8888
+            curl --connect-timeout 10 \
+              --max-time 20 \
+              --retry 3 \
+              --retry-delay 10 \
+              --retry-max-time 120 \
+              -svo /dev/null \
+              -x $nginx_proxy_ip:8888 https://www.google.com
             err=$?
             [[ $err == 0 ]] && exit 0
             count=$(( count + 1 ))
