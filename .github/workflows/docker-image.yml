@@ -29,27 +29,27 @@ jobs:
         run: |
           docker build -t nginx_proxy:latest -t nginx_proxy:$(date +%s) .
           docker images -a
-          docker-compose -f docker-compose.yaml up -d
+          # docker-compose -f docker-compose.yaml up -d
 
-      - name: Test with curl
-        run: |
-          nginx_proxy_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nginx_proxy)
-          err=1
-          count=0
-          while [[ $err != 0 ]]; do
-            curl https://www.google.com -svo /dev/null -x $nginx_proxy_ip:8888
-            err=$?
-            [[ $err == 0 ]] && exit 0
-            count=$(( count + 1 ))
-            [[ $count -ge 5 ]] && exit 1
-          done
+      # - name: Test with curl
+      #   run: |
+      #     nginx_proxy_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nginx_proxy)
+      #     err=1
+      #     count=0
+      #     while [[ $err != 0 ]]; do
+      #       curl https://www.google.com -svo /dev/null -x $nginx_proxy_ip:8888
+      #       err=$?
+      #       [[ $err == 0 ]] && exit 0
+      #       count=$(( count + 1 ))
+      #       [[ $count -ge 5 ]] && exit 1
+      #     done
 
-      - name: Stop containers and show logs
-        if: always()
-        run: |
-          docker exec -i nginx_proxy cat /var/log/nginx_errors.log || true
-          docker exec -i nginx_proxy cat /var/log/nginx_access.log || true
-          docker-compose -f docker-compose.yaml down || true
+      # - name: Stop containers and show logs
+      #   if: always()
+      #   run: |
+      #     docker exec -i nginx_proxy cat /var/log/nginx_errors.log || true
+      #     docker exec -i nginx_proxy cat /var/log/nginx_access.log || true
+      #     docker-compose -f docker-compose.yaml down || true
 
       - name: Move cache
         if: always()
