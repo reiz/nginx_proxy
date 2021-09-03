@@ -12,8 +12,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: docker/setup-buildx-action@v1
-        name: Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
       # - name: Cache Docker layers
       #   uses: actions/cache@v2
@@ -39,7 +39,7 @@ jobs:
 
       - name: Test with curl
         run: |
-          docker-compose up -d
+          docker run -d --name nginx_proxy nginx_proxy:latest
           nginx_proxy_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nginx_proxy)
           err=1
           count=0
@@ -56,7 +56,7 @@ jobs:
         run: |
           docker exec -i nginx_proxy cat /var/log/nginx_errors.log || true
           docker exec -i nginx_proxy cat /var/log/nginx_access.log || true
-          docker-compose -f docker-compose.yaml down || true
+          docker rm -f nginx_proxy
 
       # - name: Move cache
       #   if: always()
