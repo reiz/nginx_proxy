@@ -33,6 +33,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          load: true
           tags: nginx_proxy:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
