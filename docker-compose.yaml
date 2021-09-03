@@ -9,5 +9,5 @@ services:
     volumes:
       - ./nginx_whitelist.conf:/usr/local/nginx/conf/nginx.conf
     environment:
-      - TZ=Asia/Kolkata
+      - TZ=Etc/UTC
     restart: always
