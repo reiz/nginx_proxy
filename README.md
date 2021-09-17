@@ -193,6 +193,7 @@ This tables show which Docker tag contains which Ubuntu & Nginx version:
 | reiz/nginx_proxy:0.0.2  | 18.04          | 1.14.0        |              |                 |
 | reiz/nginx_proxy:0.0.3  | 20.04          | 1.18.0        |              |                 |
 | reiz/nginx_proxy:0.0.4  | 20.04          | 1.18.0        | 2021-04-25   | With libssl-dev |
+| reiz/nginx_proxy:0.0.5  | 20.04          | 1.18.0        | 2021-09-17   | Reduced image size from 471MB to 147MB |
 
 
 ## License 
