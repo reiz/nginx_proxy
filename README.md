@@ -8,8 +8,8 @@ Usually, Nginx is used to serve and cache static assets or as proxy or load bala
 Assume you have a network where you want to control outgoing traffic. 
 You either want to: 
 
- - Deny all outgoing calls by default and only allow HTTP(S) calls to whitelisted URLs.
- - Allow all outgoing calls by default and only block HTTP(S) calls to blacklisted URLs.
+ - Deny all outgoing calls by default and only allow HTTP(S) calls to allowlisted URLs.
+ - Allow all outgoing calls by default and only block HTTP(S) calls to denylisted URLs.
 
 The Docker daemon can be configured that way that it routes all traffic through an proxy. This proxy can be an Nginx which is configured as forwarding proxying.
 
@@ -28,7 +28,7 @@ the proxying will work with SSL connections as well.
 
 The Dockerfile in this repository is assembling an Nginx with the [ngx\_http\_proxy\_connect\_module](https://github.com/chobits/ngx_http_proxy_connect_module)
 and an nginx.conf file which blocks all outgoing traffic by default, 
-but allows access to some whitelisted domains like google.com.
+but allows access to some allowlisted domains like google.com.
 The Docker image can be built like this: 
 
 ```
@@ -41,15 +41,15 @@ Or simply download it from [Docker Hub](https://hub.docker.com/r/reiz/nginx_prox
 docker pull reiz/nginx_proxy:0.0.3
 ```
 
-## Whitelist certain domains
+## Allowlist certain domains
 
 This repository contains two nginx configuration files. 
-The `nginx_whitelist.conf` file is built for the use case that you want to deny all outgoing traffic by default and only allow some whitelisted domains. 
-In the first server section domains can be whitelisted by simply adding a 
-`server_name *` line for each whitelisted domain. Here an example: 
+The `nginx_allowlist.conf` file is built for the use case that you want to deny all outgoing traffic by default and only allow some allowlisted domains. 
+In the first server section domains can be allowlisted by simply adding a 
+`server_name *` line for each allowlisted domain. Here an example: 
 
 ```
-    # Whitelist Google
+    # Allowlist Google
     server {
         listen       8888;
         server_name  google.com;
@@ -66,7 +66,7 @@ In the first server section domains can be whitelisted by simply adding a
     }
 ```
 
-Regex can be used to describe a domain. This `*.google.com` for example is whitelisting all subdomains of google.com. In the above example, google.com and all subdomains of it are whitelisted. Beside that google.de and www.google.de are whitelisted. Subdomains of google.de are **not** whitelisted. 
+Regex can be used to describe a domain. This `*.google.com` for example is allowlisting all subdomains of google.com. In the above example, google.com and all subdomains of it are allowlisted. Beside that google.de and www.google.de are allowlisted. Subdomains of google.de are **not** allowlisted. 
 The proxy would allow outgoing calls to this domains: 
 
  - google.com
@@ -84,17 +84,17 @@ This domains are blocked with the above configuration:
 By starting the Docker container the file can be mounted into the running container. 
 
 ```
-docker run -d -p 8888:8888 -v ${PWD}/nginx_whitelist.conf:/usr/local/nginx/conf/nginx.conf reiz/nginx_proxy:0.0.3 
+docker run -d -p 8888:8888 -v ${PWD}/nginx_allowlist.conf:/usr/local/nginx/conf/nginx.conf reiz/nginx_proxy:0.0.3 
 ```
 
 Now the Docker container is running with the mounted configuration.
 
-## Blacklist certain domains
+## Denylist certain domains
 
 This repository contains two nginx configuration files. 
-The `nginx_blacklist.conf` file is built for the use case that you want to allow all outgoing traffic by default and only block traffic to some domains. 
-In the first server section domains can be blacklisted by simply adding a 
-`server_name *` line for each blacklisted domain. Here an example: 
+The `nginx_denylist.conf` file is built for the use case that you want to allow all outgoing traffic by default and only block traffic to some domains. 
+In the first server section domains can be denylisted by simply adding a 
+`server_name *` line for each denylisted domain. Here an example: 
 
 ```
     server {
@@ -105,11 +105,11 @@ In the first server section domains can be blacklisted by simply adding a
     }
 ```
 
-In the example above all pages would be accessible, but google.com and all subdomains of it would be blocked. Regex can be used here in the same way as in the whitelist example. 
+In the example above all pages would be accessible, but google.com and all subdomains of it would be blocked. Regex can be used here in the same way as in the allowlist example. 
 By starting the Docker container the file can be mounted into the running container. 
 
 ```
-docker run -d -p 8888:8888 -v ${PWD}/nginx_whitelist.conf:/usr/local/nginx/conf/nginx.conf reiz/nginx_proxy:0.0.1 
+docker run -d -p 8888:8888 -v ${PWD}/nginx_denylist.conf:/usr/local/nginx/conf/nginx.conf reiz/nginx_proxy:0.0.3
 ```
 
 Now the Docker container is running with the mounted configuration.
