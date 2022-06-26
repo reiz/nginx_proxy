@@ -23,7 +23,7 @@ FROM $IMAGE
 
 LABEL maintainer='Robert Reiz <reiz@versioneye.com>'
 
-COPY nginx_whitelist.conf /usr/local/nginx/conf/nginx.conf
+COPY nginx_allowlist.conf /usr/local/nginx/conf/nginx.conf
 COPY --from=builder /usr/local/nginx/sbin/nginx /usr/local/nginx/sbin/nginx
 COPY --from=builder /tini /tini
 ## save apt-get update step
