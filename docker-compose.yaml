@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: nginx_proxy
     volumes:
-      - ./nginx_whitelist.conf:/usr/local/nginx/conf/nginx.conf
+      - ./nginx_allowlist.conf:/usr/local/nginx/conf/nginx.conf
     environment:
       - TZ=Etc/UTC
     restart: always
